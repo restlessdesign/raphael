@@ -28,8 +28,7 @@ module.exports = function(grunt) {
                 src: [
                     "../eve/eve.js",
                     "raphael.core.js",
-                    "raphael.svg.js",
-                    "raphael.vml.js"
+                    "raphael.svg.js"
                 ]
             }
         }
@@ -52,7 +51,6 @@ module.exports = function(grunt) {
                 }),
                 // Start with banner
                 compiled = options.banner,
-                svgorvmlRegex = /\.(svg|vml)\.js/,
                 closureRegex = /window\.Raphael.*\(R\)\s*\{/,
                 closureEndRegex = /\}\(window\.Raphael\);\s*$/,
                 exposeRegex = /(\r?\n\s*\/\/\s*EXPOSE(?:\r|\n|.)*\}\)\);)/;
@@ -60,15 +58,14 @@ module.exports = function(grunt) {
             // Concatenate src
             src.forEach(function(path) {
                 var source = grunt.file.read(path);
-                var match = svgorvmlRegex.exec(path);
 
-                // If either SVG or VML,
-                // remove the closure and add an early return if not required
-                if (match) {
+                // If SVG module, remove the closure and add an early 
+                // return if not required
+                if (path === "raphael.svg.js") {
                     source = "\n\n" +
                         source.replace(closureRegex,
                             "(function(){\n" +
-                            "    if (!R." + match[1] + ") {\n" +
+                            "    if (!R.svg) {\n" +
                             "        return;\n" +
                             "    }"
                         )
