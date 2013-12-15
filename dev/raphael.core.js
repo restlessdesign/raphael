@@ -327,13 +327,6 @@
         };
 
     R._g = g;
-    /*\
-     * Raphael.svg
-     [ property (boolean) ]
-     **
-     * `true` if browser supports SVG.
-    \*/
-    R.svg = true;
     R._Paper = Paper;
     /*\
      * Raphael.fn
@@ -2532,9 +2525,7 @@
             return +this[Str.fromCharCode(97 + i)].toFixed(4);
         };
         matrixproto.toString = function () {
-            return R.svg ?
-                "matrix(" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)].join() + ")" :
-                [this.get(0), this.get(2), this.get(1), this.get(3), 0, 0].join();
+            return "matrix(" + [this.get(0), this.get(1), this.get(2), this.get(3), this.get(4), this.get(5)].join() + ")";
         };
         matrixproto.toFilter = function () {
             return "progid:DXImageTransform.Microsoft.Matrix(M11=" + this.get(0) +
@@ -4154,7 +4145,7 @@
                     }
                 }
             }
-            R.svg && that && that.paper && that.paper.safari();
+            that && that.paper && that.paper.safari();
             animationElements.length && requestAnimFrame(animation);
         },
         upto255 = function (color) {
