@@ -328,36 +328,12 @@
 
     R._g = g;
     /*\
-     * Raphael.type
-     [ property (string) ]
-     **
-     * Can be “SVG”, “VML” or empty, depending on browser support.
-    \*/
-    R.type = (g.win.SVGAngle || g.doc.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1") ? "SVG" : "VML");
-    if (R.type == "VML") {
-        var d = g.doc.createElement("div"),
-            b;
-        d.innerHTML = '<v:shape adj="1"/>';
-        b = d.firstChild;
-        b.style.behavior = "url(#default#VML)";
-        if (!(b && typeof b.adj == "object")) {
-            return (R.type = E);
-        }
-        d = null;
-    }
-    /*\
      * Raphael.svg
      [ property (boolean) ]
      **
      * `true` if browser supports SVG.
     \*/
-    /*\
-     * Raphael.vml
-     [ property (boolean) ]
-     **
-     * `true` if browser supports VML.
-    \*/
-    R.svg = !(R.vml = R.type == "VML");
+    R.svg = true;
     R._Paper = Paper;
     /*\
      * Raphael.fn
@@ -538,39 +514,14 @@
         }
     };
     var toHex = function (color) {
-        if (R.vml) {
-            // http://dean.edwards.name/weblog/2009/10/convert-any-colour-value-to-hex-in-msie/
-            var trim = /^\s+|\s+$/g;
-            var bod;
-            try {
-                var docum = new ActiveXObject("htmlfile");
-                docum.write("<body>");
-                docum.close();
-                bod = docum.body;
-            } catch(e) {
-                bod = createPopup().document.body;
-            }
-            var range = bod.createTextRange();
-            toHex = cacher(function (color) {
-                try {
-                    bod.style.color = Str(color).replace(trim, E);
-                    var value = range.queryCommandValue("ForeColor");
-                    value = ((value & 255) << 16) | (value & 65280) | ((value & 16711680) >>> 16);
-                    return "#" + ("000000" + value.toString(16)).slice(-6);
-                } catch(e) {
-                    return "none";
-                }
-            });
-        } else {
-            var i = g.doc.createElement("i");
-            i.title = "Rapha\xebl Colour Picker";
-            i.style.display = "none";
-            g.doc.body.appendChild(i);
-            toHex = cacher(function (color) {
-                i.style.color = color;
-                return g.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
-            });
-        }
+        var i = g.doc.createElement("i");
+        i.title = "Rapha\xebl Colour Picker";
+        i.style.display = "none";
+        g.doc.body.appendChild(i);
+        toHex = cacher(function (color) {
+            i.style.color = color;
+            return g.doc.defaultView.getComputedStyle(i, E).getPropertyValue("color");
+        });
         return toHex(color);
     },
     hsbtoString = function () {
@@ -5373,7 +5324,7 @@
     });
 
     // EXPOSE
-    // SVG and VML are appended just before the EXPOSE line
+    // SVG is appended just before the EXPOSE line
     // Even with AMD, Raphael should be defined globally
     oldRaphael.was ? (g.win.Raphael = R) : (Raphael = R);
 
